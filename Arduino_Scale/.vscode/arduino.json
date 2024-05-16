@@ -1,0 +1,5 @@
+{
+    "sketch": "Arduino_Scale.ino",
+    "output": "build",
+    "board": "arduino:avr:uno"
+}

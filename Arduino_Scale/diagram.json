@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "author": "Minh Nguyễn",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno1", "top": -143.4, "left": -317.4, "attrs": {} },
+    {
+      "type": "board-ssd1306",
+      "id": "oled1",
+      "top": 99.14,
+      "left": -306.97,
+      "attrs": { "i2cAddress": "0x3c" }
+    },
+    { "type": "wokwi-lcd1602", "id": "lcd1", "top": 64, "left": -52, "attrs": { "pins": "i2c" } },
+    {
+      "type": "wokwi-hx711",
+      "id": "cell1",
+      "top": -227.8,
+      "left": -55,
+      "attrs": { "type": "50kg" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn1",
+      "top": -209.4,
+      "left": -128,
+      "rotate": 270,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn2",
+      "top": -209.4,
+      "left": -195.2,
+      "rotate": 270,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn3",
+      "top": -209.4,
+      "left": -166.4,
+      "rotate": 270,
+      "attrs": { "color": "green" }
+    }
+  ],
+  "connections": [
+    [ "oled1:GND", "uno1:GND.2", "black", [ "v-48", "h124.8" ] ],
+    [ "lcd1:GND", "uno1:GND.2", "black", [ "h-9.6", "v-38.4", "h-86.4" ] ],
+    [ "oled1:VCC", "uno1:3.3V", "red", [ "v-48", "h0.15" ] ],
+    [ "lcd1:VCC", "uno1:5V", "red", [ "h-9.6", "v-47.9", "h-96" ] ],
+    [ "oled1:SCL", "uno1:A5", "green", [ "v-48", "h192.3" ] ],
+    [ "oled1:SDA", "uno1:A4", "green", [ "v-48", "h172.87" ] ],
+    [ "lcd1:SDA", "uno1:A4", "green", [ "h-9.6", "v-57.4", "h-9.6" ] ],
+    [ "lcd1:SCL", "uno1:A5", "green", [ "h-9.6", "v-66.9", "h-9.6" ] ],
+    [ "cell1:GND", "uno1:GND.1", "black", [ "h-19.2", "v57.3", "h-134.4" ] ],
+    [ "cell1:DT", "uno1:6", "green", [ "h-19.2", "v47.5", "h-48" ] ],
+    [ "cell1:SCK", "uno1:7", "green", [ "h-19.2", "v37.6", "h-67.2" ] ],
+    [ "cell1:VCC", "uno1:VIN", "red", [ "h-9.6", "v28.8", "h19.2", "v201.6", "h-86.4" ] ],
+    [ "btn1:1.l", "uno1:GND.1", "green", [ "v38.4", "h-48" ] ],
+    [ "btn1:2.l", "uno1:4", "green", [ "v38.4", "h38.8" ] ],
+    [ "btn3:1.l", "uno1:GND.1", "green", [ "v38.4", "h-38.4" ] ],
+    [ "btn3:2.l", "uno1:8", "green", [ "v0" ] ],
+    [ "btn2:1.l", "uno1:GND.1", "green", [ "v38.4", "h-9.6" ] ],
+    [ "btn2:2.l", "uno1:9", "green", [ "v38.4", "h19.6" ] ]
+  ],
+  "dependencies": {}
+}

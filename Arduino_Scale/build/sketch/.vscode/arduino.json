@@ -1,0 +1,6 @@
+#line 1 "C:\\Users\\Admin\\Downloads\\Wokwi\\Arduino_Scale\\.vscode\\arduino.json"
+{
+    "sketch": "Arduino_Scale.ino",
+    "output": "build",
+    "board": "arduino:avr:uno"
+}

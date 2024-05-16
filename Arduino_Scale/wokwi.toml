@@ -1,0 +1,4 @@
+[wokwi]
+version=1
+firmware='build/Arduino_Scale.ino.hex'
+elf='build/Arduino_Scale.ino.elf'
