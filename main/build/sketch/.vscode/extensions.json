@@ -1,0 +1,7 @@
+#line 1 "C:\\Users\\Admin\\Downloads\\Wokwi\\main\\.vscode\\extensions.json"
+{
+  "recommendations": [
+    "vsciot-vscode.vscode-arduino",
+    "wokwi.wokwi-vscode"
+  ]
+}
