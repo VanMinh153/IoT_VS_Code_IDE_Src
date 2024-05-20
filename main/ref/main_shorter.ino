@@ -30,7 +30,7 @@ float w = 0;
 float w_data[10];
 int p = 0;
 float w_avg = 0;
-unsigned long refTime = millis();
+unsigned long timer = millis();
 unsigned long refTime2 = millis();
 uint8_t mode = KG_MODE;
 float record[3];
@@ -118,7 +118,7 @@ void loop() {
 // feature: Auto turn off the screen backlight
 // if the weighing result does not change by more than (ERR_RANGE)kg in 3s
   if (abs(w - w_avg) < ERR_RANGE) {
-    if (millis() - refTime > TIMEOUT) {
+    if (millis() - timer > TIMEOUT) {
       lcd.noBacklight();
       delay(FLICKER_DELAY);
       lcd.backlight();
@@ -133,10 +133,10 @@ void loop() {
         delay(500);
       }
       lcd.backlight();
-      refTime = millis();
+      timer = millis();
     }
   } else {
-    refTime = millis();
+    timer = millis();
   }
   
 // feature: Save and View the results of the last 3 weightings
@@ -162,7 +162,7 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(" Taring...       ");
     delay(100);
-    refTime = millis();
+    timer = millis();
   }
 
 // feature: Change weight unit from kilogram to pound
@@ -174,7 +174,7 @@ void loop() {
     }
     lcd_(w);
     delay(100);
-    refTime = millis();
+    timer = millis();
   }
 
 // feature: Adjust weighting result up
@@ -183,7 +183,7 @@ void loop() {
     scale -= 1;
     sensor.setScale(scale);
     lcd_(sensor.getWeight(3, 2));
-    refTime = millis();
+    timer = millis();
   }
 
 // feature: Adjust weighting result down
@@ -192,7 +192,7 @@ void loop() {
     scale += 1;
     sensor.setScale(scale);
     lcd_(sensor.getWeight(3, 2));
-    refTime = millis();
+    timer = millis();
   }
 
   delay(50);

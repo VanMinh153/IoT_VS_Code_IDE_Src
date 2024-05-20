@@ -1,134 +1,54 @@
 #line 1 "C:\\Users\\Admin\\Downloads\\Wokwi\\main\\HX711-HEDSPI.cpp"
 /**
- **************************************************
+ * @brief       Arduino library for HX711
  *
- * @file        HX711.cpp
- * @brief       Arduino library for hx711 breakout
- *
- *
- * @authors     @ soldered.com @Robert Peric
+ * @authors     @ soldered.com @ Robert Peric
  * @authors     Nguyen Van Minh - SOICT-HUST
- ***************************************************/
+ */
 
 #include "HX711-HEDSPI.h"
 
-/**
- * @brief           HX711 native constructor.
- *
- * @param           int dout pin connected to hx711 dout pin
- * @param           int pd_sck pin connected to hx711 pd_sck pin
- */
-HX711::HX711(int dout, int pd_sck) {
-  _pd_sck = pd_sck;
-  _dout = dout;
-
-  native = 1;
+HX711::HX711(uint8_t dout, uint8_t pd_sck, uint8_t gain, float scale) {
+  DOUT = dout;
+  PD_SCK = pd_sck;
+  Gain = gain;
+  Scale = scale;
 }
 
-/**
- * @brief       HX711 default constructor used with easyC
- */
-HX711::HX711() {}
+void HX711::init() {
+  pinMode(PD_SCK, OUTPUT);
+  pinMode(DOUT, INPUT);
+}
 
-//________________________________________________________________________
-//________________________________________________________________________
 
-/**
- * @brief       getData communicates with hx controller and collects data from
- * device
- *
- * @return      data from device data register
- */
-uint32_t HX711::getData() {
-  uint32_t data = 0;
-
-  if (native) {
-    data = readDataNative();
-  } else {
-    uint8_t g[1];
-    g[0] = _gain;
-    sendData(g, 1);
-
-    uint8_t buf[4];
-
-    readData(buf, 4);
-    data |= ((uint32_t)buf[0] << 24);
-    data |= ((uint32_t)buf[1] << 16);
-    data |= ((uint32_t)buf[2] << 8);
-    data |= ((uint32_t)buf[3] << 0);
+void HX711::setGain(uint8_t gain) {
+  if (gain >= 25 && gain <= 27) {
+    Gain = gain;
   }
-  // Serial.print(data);
-  // Serial.print(" ");
+}
+
+void HX711::setScale(float scale) { Scale = scale; }
+
+int32_t HX711::setZero() {
+  Zero = getData();
+  return Zero;
+}
+
+
+int32_t HX711::getData() {
+  int32_t data = 0;
+  data = readDataNative();
+  if (data != 8820) {
+    Serial.print(data);
+    Serial.print(" ");
+  }
+  
   return data;
 }
 
-/**
- * @brief                   Overloaded function for virtual in base class to
- * initialize sensor specific.
- */
-void HX711::initializeNative() {
-  pinMode(_pd_sck, OUTPUT);
-  pinMode(_dout, INPUT);
-}
 
-/**
- * @brief       setToZerro sets _zerroConstant to some value that will be used
- * to get 0 when nothing is on scale
- */
-void HX711::setToZerro() {
-  uint32_t w_avg = 0;
-  for (int i = 0; i < 5; i++) {
-    w_avg += getData();
-    delay(1);
-  }
-  w_avg /= 5;
-  _zerroConstant = w_avg;
-}
-
-/**
- * @brief       setScale sets scale constant that will be multiplied with data
- * we get from sensor to get value in grams
- *
- * @param       float scale sets _scaleConstant that is used when returning
- * weights in grams
- */
-void HX711::setScale(float scale) { _scaleConstant = scale; }
-
-/**
- * @brief       getWeight calculates weight in grams
- *
- * @return      float weight in grams
- */
 float HX711::getWeight() {
-  return (long)(getData() - _zerroConstant) / _scaleConstant;
-}
-
-/**
- * @brief       getWeight calculates average weight in grams
- *
- * @param       uint8_t loop number of loops to average
- * @param       uint8_t delay delay between loops
- * @return      float weight in
- */
-float HX711::getWeight(uint8_t repeat, uint8_t delay_ms) {
-  unsigned int w_avg = 0;
-  for (int i = 0; i < repeat; i++) {
-    w_avg += getData();
-    delay(delay_ms);
-  }
-  w_avg /= repeat;
-  return (long)(w_avg - _zerroConstant) / _scaleConstant;
-}
-
-/**
- * @brief       setGain sets _gain variable thats used for controling sensor
- *
- * @param       uint8_t gain posible values are GAIN_128, GAIN_64, GAIN_32
- */
-void HX711::setGain(uint8_t gain) {
-  if (gain >= 25 && gain <= 27) {
-    _gain = gain;
-  }
+  return (long)(getData() - Zero) / Scale;
 }
 
 /**
@@ -136,62 +56,61 @@ void HX711::setGain(uint8_t gain) {
  *
  * @return      data from device data register
  */
-uint32_t HX711::readDataNative() {
-  // power down just to make sure
-  digitalWrite(_pd_sck, HIGH);
+int32_t HX711::readDataNative() {
+  // begin reading
+  digitalWrite(PD_SCK, HIGH);
   delayMicroseconds(70);
-
-  // power up
-  digitalWrite(_pd_sck, LOW);
+  digitalWrite(PD_SCK, LOW);
   delayMicroseconds(100);
 
   // wait for DOUT pin to go LOW and signal data available
-  uint32_t timer = millis();
-  while (digitalRead(_dout) == HIGH) {
+  unsigned long timer = millis();
+  while (digitalRead(DOUT) == HIGH) {
     if (millis() - timer > 550) {
       return 0;
     }
   }
 
   // Set gain for next reading of data
-  if (_gain >= 25 && _gain <= 27) {
-    for (int i = 0; i < _gain; i++) {
-      digitalWrite(_pd_sck, HIGH);
-      delayMicroseconds(4);
-      digitalWrite(_pd_sck, LOW);
-      delayMicroseconds(4);
-    }
+  for (uint8_t i = 0; i < Gain; i++) {
+    digitalWrite(PD_SCK, HIGH);
+    delayMicroseconds(4);
+    digitalWrite(PD_SCK, LOW);
+    delayMicroseconds(4);
   }
 
   // Wait aggain for DOUT pin to signal available data
   timer = millis();
-  while (digitalRead(_dout) == HIGH) {
+  while (digitalRead(DOUT) == HIGH) {
     if (millis() - timer > 550) {
       return 0;
     }
   }
 
-  uint32_t result = 0;
+  int32_t result = 0;
   // read data
-  for (int i = 0; i < 24; ++i) {
-    digitalWrite(_pd_sck, HIGH);
+  for (uint8_t i = 0; i < 24; ++i) {
+    digitalWrite(PD_SCK, HIGH);
     delayMicroseconds(4);
 
-    result = ((result << 1) | digitalRead(_dout));
+    result = ((result << 1) | digitalRead(DOUT));
 
-    digitalWrite(_pd_sck, LOW);
+    digitalWrite(PD_SCK, LOW);
     delayMicroseconds(4);
   }
 
-  // One last pulse to set dout to high
-  digitalWrite(_pd_sck, HIGH);
+  // One last pulse to set DOUT to high
+  digitalWrite(PD_SCK, HIGH);
   delayMicroseconds(4);
-  digitalWrite(_pd_sck, LOW);
+  digitalWrite(PD_SCK, LOW);
   delayMicroseconds(4);
 
   // turn chip off
-  digitalWrite(_pd_sck, HIGH);
+  digitalWrite(PD_SCK, HIGH);
   delayMicroseconds(70);
-
+  
+  if (bitRead(result, 23) == 1) {
+    result |= 0xFF000000;
+  }
   return result;
 }

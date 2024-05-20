@@ -11,6 +11,7 @@ C:\Users\Admin\Downloads\Wokwi\main\build\sketch\main.ino.cpp.o: \
  C:\Users\Admin\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\cores\arduino/USBAPI.h \
  C:\Users\Admin\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\cores\arduino/Arduino.h \
  C:\Users\Admin\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\variants\standard/pins_arduino.h \
+ C:\Users\Admin\Downloads\Wokwi\main\build\sketch\HX711-HEDSPI.h \
  C:\Users\Admin\Documents\Arduino\libraries\LiquidCrystal_I2C/LiquidCrystal_I2C.h \
  C:\Users\Admin\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\cores\arduino/Print.h \
  C:\Users\Admin\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\libraries\Wire\src/Wire.h \

@@ -30,11 +30,6 @@
     "Includepath": null
   },
   {
-    "Sourcefile": "C:\\Users\\Admin\\Downloads\\Wokwi\\main\\build\\sketch\\easyC.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
     "Sourcefile": "C:\\Users\\Admin\\Documents\\Arduino\\libraries\\LiquidCrystal_I2C\\LiquidCrystal_I2C.cpp",
     "Include": "",
     "Includepath": null
