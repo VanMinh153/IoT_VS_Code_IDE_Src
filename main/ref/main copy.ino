@@ -50,7 +50,7 @@ void recordInterrupt()
 void setup()
 {
   Serial.begin(57600);
-  pinMode(TAREE, INPUT_PULLUP);
+  pinMode(TARE, INPUT_PULLUP);
   pinMode(MODE, INPUT_PULLUP);
   pinMode(UP, INPUT_PULLUP);
   pinMode(DOWN, INPUT_PULLUP);
@@ -220,7 +220,7 @@ void loop()
   }
 
   // feature: Adjust the scale to 0 kg
-  if (digitalRead(TAREE) == LOW)
+  if (digitalRead(TARE) == LOW)
   {
     sensor.setZero();
     lcd.setCursor(0, 1);

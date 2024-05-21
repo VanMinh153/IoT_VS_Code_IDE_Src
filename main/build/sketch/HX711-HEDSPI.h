@@ -1,10 +1,11 @@
 #line 1 "C:\\Users\\Admin\\Downloads\\Wokwi\\main\\HX711-HEDSPI.h"
 /**
- * @brief       Arduino library for HX711
+ * @brief       Library for HX711
  *
- * @authors     @ soldered.com @Robert Peric
- * @authors     Nguyen Van Minh - SOICT-HUST
- ***************************************************/
+ * @author     Nguyen Van Minh - SOICT-HUST
+ * @ref        HX711-SOLDERED - @soldered.com @Robert Peric
+ */
+
 #ifndef __HX711_HEDSPI__
 #define __HX711_HEDSPI__
 
@@ -22,12 +23,10 @@ public:
 
   void setGain(uint8_t Gain);
   void setScale(float Scale);
+  void setZero(int32_t Zero);
   int32_t setZero();
   int32_t getData();
-  int32_t readDataNative();
   float getWeight();
-  float getWeight(uint8_t repeat);
-  // float getWeight_(uint8_t repeat);
 
 private:
   uint8_t DOUT;

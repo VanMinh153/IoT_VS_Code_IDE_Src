@@ -1,54 +1,43 @@
 #line 1 "C:\\Users\\Admin\\Downloads\\Wokwi\\main\\HX711-HEDSPI.cpp"
 /**
- * @brief       Arduino library for HX711
+ * @brief       Library for HX711
  *
- * @authors     @ soldered.com @ Robert Peric
- * @authors     Nguyen Van Minh - SOICT-HUST
+ * @author     Nguyen Van Minh - SOICT-HUST
+ * @ref        HX711-SOLDERED - @soldered.com @Robert Peric
  */
 
 #include "HX711-HEDSPI.h"
 
-HX711::HX711(uint8_t dout, uint8_t pd_sck, uint8_t gain, float scale) {
+HX711::HX711(uint8_t dout, uint8_t pd_sck, uint8_t gain, float scale)
+{
   DOUT = dout;
   PD_SCK = pd_sck;
   Gain = gain;
   Scale = scale;
 }
 
-void HX711::init() {
+void HX711::init()
+{
   pinMode(PD_SCK, OUTPUT);
   pinMode(DOUT, INPUT);
 }
 
-
-void HX711::setGain(uint8_t gain) {
-  if (gain >= 25 && gain <= 27) {
+void HX711::setGain(uint8_t gain)
+{
+  if (gain >= 25 && gain <= 27)
+  {
     Gain = gain;
   }
 }
 
 void HX711::setScale(float scale) { Scale = scale; }
 
-int32_t HX711::setZero() {
+void HX711::setZero(int32_t zero) { Zero = zero; }
+
+int32_t HX711::setZero()
+{
   Zero = getData();
   return Zero;
-}
-
-
-int32_t HX711::getData() {
-  int32_t data = 0;
-  data = readDataNative();
-  if (data != 8820) {
-    Serial.print(data);
-    Serial.print(" ");
-  }
-  
-  return data;
-}
-
-
-float HX711::getWeight() {
-  return (long)(getData() - Zero) / Scale;
 }
 
 /**
@@ -56,7 +45,8 @@ float HX711::getWeight() {
  *
  * @return      data from device data register
  */
-int32_t HX711::readDataNative() {
+int32_t HX711::getData()
+{
   // begin reading
   digitalWrite(PD_SCK, HIGH);
   delayMicroseconds(70);
@@ -65,31 +55,37 @@ int32_t HX711::readDataNative() {
 
   // wait for DOUT pin to go LOW and signal data available
   unsigned long timer = millis();
-  while (digitalRead(DOUT) == HIGH) {
-    if (millis() - timer > 550) {
+  while (digitalRead(DOUT) == HIGH)
+  {
+    if (millis() - timer > 550)
+    {
       return 0;
     }
   }
 
   // Set gain for next reading of data
-  for (uint8_t i = 0; i < Gain; i++) {
+  for (uint8_t i = 0; i < Gain; i++)
+  {
     digitalWrite(PD_SCK, HIGH);
     delayMicroseconds(4);
     digitalWrite(PD_SCK, LOW);
     delayMicroseconds(4);
   }
 
-  // Wait aggain for DOUT pin to signal available data
+  // Wait again for DOUT pin to signal available data
   timer = millis();
-  while (digitalRead(DOUT) == HIGH) {
-    if (millis() - timer > 550) {
+  while (digitalRead(DOUT) == HIGH)
+  {
+    if (millis() - timer > 550)
+    {
       return 0;
     }
   }
 
   int32_t result = 0;
   // read data
-  for (uint8_t i = 0; i < 24; ++i) {
+  for (uint8_t i = 0; i < 24; ++i)
+  {
     digitalWrite(PD_SCK, HIGH);
     delayMicroseconds(4);
 
@@ -108,9 +104,26 @@ int32_t HX711::readDataNative() {
   // turn chip off
   digitalWrite(PD_SCK, HIGH);
   delayMicroseconds(70);
-  
-  if (bitRead(result, 23) == 1) {
+
+  if (bitRead(result, 23) == 1)
+  {
     result |= 0xFF000000;
   }
   return result;
 }
+
+float HX711::getWeight()
+{
+  return (long)(getData() - Zero) / Scale;
+}
+
+// This function is for debugging purpose
+// int32_t HX711::getData() {
+//   int32_t data = 0;
+//   data = readDataNative();
+//   if (data != xxx) {
+//     Serial.print(data);
+//     Serial.print(" ");
+//   }
+//   return data;
+// }

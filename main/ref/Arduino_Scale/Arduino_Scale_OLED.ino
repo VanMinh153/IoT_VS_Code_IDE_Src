@@ -23,7 +23,7 @@ Adafruit_SSD1306 display(128, 64, &Wire, -1);
 void setup()
 {
   Serial.begin(57600);
-  pinMode(TAREE, INPUT_PULLUP);
+  pinMode(TARE, INPUT_PULLUP);
   pinMode(UP, INPUT_PULLUP);
   pinMode(DOWN, INPUT_PULLUP);
 
@@ -53,7 +53,7 @@ void loop()
 
   display_(w);
 
-  if (digitalRead(TAREE) == LOW)
+  if (digitalRead(TARE) == LOW)
   {
     sensor.setToZerro();
     display_("Taring...");
